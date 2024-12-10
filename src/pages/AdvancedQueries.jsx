@@ -130,7 +130,7 @@ const AdvancedQueries = () => {
             onChange={handleCategoryChange}
           >
             <option value="">Selecione uma categoria...</option>
-            <option value="basic-queries">Consultas Básicas</option>
+            <option value="basic-queries">Consultas Básicas e Aninhadas</option>
             <option value="string-operations">Operações com Strings</option>
             <option value="aggregate-functions">Funções Agregadas</option>
             <option value="ordering">Ordenação</option>
