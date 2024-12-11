@@ -14,7 +14,14 @@ const Teams = () => {
   const fetchTeams = async () => {
     try {
       const response = await axios.get("/api/teams");
-      setTeams(response.data);
+      console.log("Resposta da API:", response.data);
+      const formattedTeams = Array.isArray(response.data)
+        ? response.data.map((team) => ({
+            ...team,
+            foundedYear: team.foundedYear || "Ano não informado", // Substitui 0 por texto padrão
+          }))
+        : [];
+      setTeams(formattedTeams);
     } catch (error) {
       console.error("Erro ao buscar times:", error);
     }
@@ -28,13 +35,17 @@ const Teams = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        name: formData.name,
+        foundedYear: formData.founded_year, // Ajusta para o formato esperado pelo backend
+      };
       if (editingTeam) {
         // Atualiza o time
-        await axios.put(`/api/teams/${editingTeam.id}`, formData);
+        await axios.put(`/api/teams/${editingTeam.id}`, payload);
         setEditingTeam(null);
       } else {
         // Cria um novo time
-        await axios.post("/api/teams", formData);
+        await axios.post("/api/teams", payload);
       }
       setFormData({ name: "", founded_year: "" });
       fetchTeams();
@@ -45,7 +56,11 @@ const Teams = () => {
 
   const handleEdit = (team) => {
     setEditingTeam(team);
-    setFormData({ name: team.name, founded_year: team.founded_year });
+    setFormData({
+      name: team.name,
+      founded_year:
+        team.foundedYear === "Ano não informado" ? "" : team.foundedYear, // Adapta o valor para o formulário
+    });
   };
 
   const handleDelete = async (id) => {
@@ -115,26 +130,32 @@ const Teams = () => {
             </tr>
           </thead>
           <tbody>
-            {teams.map((team) => (
-              <tr key={team.id}>
-                <td>{team.name}</td>
-                <td>{team.founded_year}</td>
-                <td>
-                  <button
-                    className="btn btn-warning me-2"
-                    onClick={() => handleEdit(team)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(team.id)}
-                  >
-                    Excluir
-                  </button>
-                </td>
+            {teams.length > 0 ? (
+              teams.map((team) => (
+                <tr key={team.id}>
+                  <td>{team.name}</td>
+                  <td>{team.foundedYear}</td>
+                  <td>
+                    <button
+                      className="btn btn-warning me-2"
+                      onClick={() => handleEdit(team)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(team.id)}
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">Nenhum time encontrado.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
