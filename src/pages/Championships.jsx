@@ -15,7 +15,7 @@ const Championships = () => {
 
   const fetchChampionships = async () => {
     try {
-      const response = await axios.get("/api/championships");
+      const response = await axios.get("/api/champs");
       setChampionships(response.data);
     } catch (error) {
       console.error("Erro ao buscar campeonatos:", error);
@@ -32,14 +32,11 @@ const Championships = () => {
     try {
       if (editingChampionship) {
         // Atualiza o campeonato
-        await axios.put(
-          `/api/championships/${editingChampionship.id}`,
-          formData
-        );
+        await axios.put(`/api/champs/${editingChampionship.id}`, formData);
         setEditingChampionship(null);
       } else {
         // Cria um novo campeonato
-        await axios.post("/api/championships", formData);
+        await axios.post("/api/champs", formData);
       }
       setFormData({ name: "" });
       fetchChampionships();
@@ -57,7 +54,7 @@ const Championships = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/championships/${id}`);
+      await axios.delete(`/api/champs/${id}`);
       fetchChampionships();
     } catch (error) {
       console.error("Erro ao excluir campeonato:", error);

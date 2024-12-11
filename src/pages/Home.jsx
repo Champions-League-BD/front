@@ -61,7 +61,7 @@ const Home = () => {
               <p className="card-text">
                 Adicione, edite ou exclua informações sobre os campeonatos.
               </p>
-              <Link to="/championships" className="btn btn-primary">
+              <Link to="/champs" className="btn btn-primary">
                 Acessar
               </Link>
             </div>

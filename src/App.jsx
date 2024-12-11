@@ -15,7 +15,7 @@ const App = () => {
         <Route path="/teams" element={<Teams />} />
         <Route path="/players" element={<Players />} />
         <Route path="/stadiums" element={<Stadiums />} />
-        <Route path="/championships" element={<Championships />} />
+        <Route path="/champs" element={<Championships />} />
         <Route path="/advanced-queries" element={<AdvancedQueries />} />
       </Routes>
     </Router>
