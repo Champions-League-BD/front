@@ -3,7 +3,12 @@ import axios from "axios";
 
 const Teams = () => {
   const [teams, setTeams] = useState([]);
-  const [formData, setFormData] = useState({ name: "", founded_year: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    founded_year: "",
+    fifa_ranking: "",
+    market_value: "",
+  });
   const [editingTeam, setEditingTeam] = useState(null);
 
   // Carrega os times do backend
@@ -38,6 +43,8 @@ const Teams = () => {
       const payload = {
         name: formData.name,
         foundedYear: formData.founded_year, // Ajusta para o formato esperado pelo backend
+        fifaRanking: formData.fifa_ranking,
+        marketValue: formData.market_value,
       };
       if (editingTeam) {
         // Atualiza o time
@@ -47,7 +54,12 @@ const Teams = () => {
         // Cria um novo time
         await axios.post("/api/teams", payload);
       }
-      setFormData({ name: "", founded_year: "" });
+      setFormData({
+        name: "",
+        founded_year: "",
+        fifa_ranking: "",
+        market_value: "",
+      });
       fetchTeams();
     } catch (error) {
       console.error("Erro ao salvar time:", error);
@@ -60,6 +72,8 @@ const Teams = () => {
       name: team.name,
       founded_year:
         team.foundedYear === "Ano não informado" ? "" : team.foundedYear, // Adapta o valor para o formulário
+      fifa_ranking: team.fifaRanking || "",
+      market_value: team.marketValue || "",
     });
   };
 
@@ -101,6 +115,28 @@ const Teams = () => {
               required
             />
           </div>
+          <div className="form-group mt-3">
+            <label>Ranking FIFA</label>
+            <input
+              type="number"
+              className="form-control"
+              name="fifa_ranking"
+              value={formData.fifa_ranking}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group mt-3">
+            <label>Valor de Mercado (em milhões)</label>
+            <input
+              type="number"
+              className="form-control"
+              name="market_value"
+              value={formData.market_value}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
           <button type="submit" className="btn btn-primary mt-3">
             {editingTeam ? "Atualizar Time" : "Adicionar Time"}
           </button>
@@ -110,7 +146,12 @@ const Teams = () => {
               className="btn btn-secondary mt-3 ms-3"
               onClick={() => {
                 setEditingTeam(null);
-                setFormData({ name: "", founded_year: "" });
+                setFormData({
+                  name: "",
+                  founded_year: "",
+                  fifa_ranking: "",
+                  market_value: "",
+                });
               }}
             >
               Cancelar
@@ -126,6 +167,8 @@ const Teams = () => {
             <tr>
               <th>Nome</th>
               <th>Ano de Fundação</th>
+              <th>Ranking FIFA</th>
+              <th>Valor de Mercado</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -135,6 +178,8 @@ const Teams = () => {
                 <tr key={team.id}>
                   <td>{team.name}</td>
                   <td>{team.foundedYear}</td>
+                  <td>{team.fifaRanking}</td>
+                  <td>{team.marketValue} milhões</td>
                   <td>
                     <button
                       className="btn btn-warning me-2"
@@ -153,7 +198,7 @@ const Teams = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3">Nenhum time encontrado.</td>
+                <td colSpan="5">Nenhum time encontrado.</td>
               </tr>
             )}
           </tbody>

@@ -6,6 +6,7 @@ import Players from "./pages/Players";
 import Stadiums from "./pages/Stadiums";
 import Championships from "./pages/Championships";
 import AdvancedQueries from "./pages/AdvancedQueries";
+import AdvancedQueries from "./pages/Addresses";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/stadiums" element={<Stadiums />} />
         <Route path="/champs" element={<Championships />} />
         <Route path="/advanced-queries" element={<AdvancedQueries />} />
+        <Route path="/addresses" element={<AdvancedQueries />} />
       </Routes>
     </Router>
   );

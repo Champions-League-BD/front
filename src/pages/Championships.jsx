@@ -5,6 +5,9 @@ const Championships = () => {
   const [championships, setChampionships] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
+    edition: "",
+    start_date: "",
+    end_date: "",
   });
   const [editingChampionship, setEditingChampionship] = useState(null);
 
@@ -38,7 +41,12 @@ const Championships = () => {
         // Cria um novo campeonato
         await axios.post("/api/champs", formData);
       }
-      setFormData({ name: "" });
+      setFormData({
+        name: "",
+        edition: "",
+        start_date: "",
+        end_date: "",
+      });
       fetchChampionships();
     } catch (error) {
       console.error("Erro ao salvar campeonato:", error);
@@ -49,6 +57,9 @@ const Championships = () => {
     setEditingChampionship(championship);
     setFormData({
       name: championship.name,
+      edition: championship.edition,
+      start_date: championship.start_date,
+      end_date: championship.end_date,
     });
   };
 
@@ -83,6 +94,39 @@ const Championships = () => {
               required
             />
           </div>
+          <div className="form-group">
+            <label>Edição</label>
+            <input
+              type="number"
+              className="form-control"
+              name="edition"
+              value={formData.edition}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Data de Início</label>
+            <input
+              type="date"
+              className="form-control"
+              name="start_date"
+              value={formData.start_date}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Data de Término</label>
+            <input
+              type="date"
+              className="form-control"
+              name="end_date"
+              value={formData.end_date}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
           <button type="submit" className="btn btn-primary mt-3">
             {editingChampionship
               ? "Atualizar Campeonato"
@@ -94,7 +138,12 @@ const Championships = () => {
               className="btn btn-secondary mt-3 ms-3"
               onClick={() => {
                 setEditingChampionship(null);
-                setFormData({ name: "" });
+                setFormData({
+                  name: "",
+                  edition: "",
+                  start_date: "",
+                  end_date: "",
+                });
               }}
             >
               Cancelar
@@ -109,6 +158,9 @@ const Championships = () => {
           <thead>
             <tr>
               <th>Nome</th>
+              <th>Edição</th>
+              <th>Data de Início</th>
+              <th>Data de Término</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -116,6 +168,9 @@ const Championships = () => {
             {championships.map((championship) => (
               <tr key={championship.id}>
                 <td>{championship.name}</td>
+                <td>{championship.edition}</td>
+                <td>{championship.start_date}</td>
+                <td>{championship.end_date}</td>
                 <td>
                   <button
                     className="btn btn-warning me-2"

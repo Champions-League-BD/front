@@ -6,15 +6,20 @@ const Stadiums = () => {
   const [formData, setFormData] = useState({
     name: "",
     capacity: "",
+    built_year: "",
+    owner: "",
     address_id: "",
+    team_id: "",
   });
   const [addresses, setAddresses] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [editingStadium, setEditingStadium] = useState(null);
 
-  // Carrega os estádios e os endereços do backend
+  // Carrega os estádios, endereços e times do backend
   useEffect(() => {
     fetchStadiums();
     fetchAddresses();
+    fetchTeams();
   }, []);
 
   const fetchStadiums = async () => {
@@ -35,6 +40,15 @@ const Stadiums = () => {
     }
   };
 
+  const fetchTeams = async () => {
+    try {
+      const response = await axios.get("/api/teams");
+      setTeams(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar times:", error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -51,7 +65,14 @@ const Stadiums = () => {
         // Cria um novo estádio
         await axios.post("/api/stadiums", formData);
       }
-      setFormData({ name: "", capacity: "", address_id: "" });
+      setFormData({
+        name: "",
+        capacity: "",
+        built_year: "",
+        owner: "",
+        address_id: "",
+        team_id: "",
+      });
       fetchStadiums();
     } catch (error) {
       console.error("Erro ao salvar estádio:", error);
@@ -63,7 +84,10 @@ const Stadiums = () => {
     setFormData({
       name: stadium.name,
       capacity: stadium.capacity,
+      built_year: stadium.built_year,
+      owner: stadium.owner,
       address_id: stadium.address_id || "",
+      team_id: stadium.team_id || "",
     });
   };
 
@@ -106,6 +130,28 @@ const Stadiums = () => {
             />
           </div>
           <div className="form-group mt-3">
+            <label>Ano de Construção</label>
+            <input
+              type="number"
+              className="form-control"
+              name="built_year"
+              value={formData.built_year}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group mt-3">
+            <label>Proprietário</label>
+            <input
+              type="text"
+              className="form-control"
+              name="owner"
+              value={formData.owner}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group mt-3">
             <label>Endereço</label>
             <select
               className="form-control"
@@ -121,6 +167,22 @@ const Stadiums = () => {
               ))}
             </select>
           </div>
+          <div className="form-group mt-3">
+            <label>Time</label>
+            <select
+              className="form-control"
+              name="team_id"
+              value={formData.team_id}
+              onChange={handleInputChange}
+            >
+              <option value="">Selecione um time</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <button type="submit" className="btn btn-primary mt-3">
             {editingStadium ? "Atualizar Estádio" : "Adicionar Estádio"}
           </button>
@@ -130,7 +192,14 @@ const Stadiums = () => {
               className="btn btn-secondary mt-3 ms-3"
               onClick={() => {
                 setEditingStadium(null);
-                setFormData({ name: "", capacity: "", address_id: "" });
+                setFormData({
+                  name: "",
+                  capacity: "",
+                  built_year: "",
+                  owner: "",
+                  address_id: "",
+                  team_id: "",
+                });
               }}
             >
               Cancelar
@@ -146,7 +215,10 @@ const Stadiums = () => {
             <tr>
               <th>Nome</th>
               <th>Capacidade</th>
+              <th>Ano de Construção</th>
+              <th>Proprietário</th>
               <th>Endereço</th>
+              <th>Time</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -155,11 +227,14 @@ const Stadiums = () => {
               <tr key={stadium.id}>
                 <td>{stadium.name}</td>
                 <td>{stadium.capacity}</td>
+                <td>{stadium.built_year}</td>
+                <td>{stadium.owner}</td>
                 <td>
                   {stadium.address
                     ? `${stadium.address.street}, ${stadium.address.city}, ${stadium.address.state}`
                     : "Sem endereço"}
                 </td>
+                <td>{stadium.team ? stadium.team.name : "Sem time"}</td>
                 <td>
                   <button
                     className="btn btn-warning me-2"
